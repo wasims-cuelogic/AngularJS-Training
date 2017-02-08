@@ -1,15 +1,15 @@
-(function() {
+(function () {
 
     'use strict';
 
     angular
         .module('dashboard')
-        .controller('dashboardController', ['$scope', '$state', 'dashboardService', dashboardController]);
+        .controller('dashboardController', ['$scope', '$state', 'dashboardService', 'employeeService', dashboardController]);
 
-    function dashboardController($scope, $state, dashboardService) {
+    function dashboardController($scope, $state, dashboardService, employeeService) {
         $scope.blackSpinner = 'resource/images/blackSpinner.gif';
 
-        $scope.userList = function() {
+        $scope.userList = function () {
             //calling API and get user list
             $scope.getUsers = dashboardService.getUserList().userDetails;
             $scope.subTabMenus = [{
@@ -19,7 +19,11 @@
                 'tabMenu': 'Proposals',
                 'action': 'proposals'
             }]
-        }
+        };
+
+        $scope.editUser = function (userId) {
+            $state.transitionTo('base.edit', { id: userId });
+        };
     }
 
 })();
