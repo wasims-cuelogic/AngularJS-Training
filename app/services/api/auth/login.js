@@ -1,43 +1,37 @@
 angular.module('login.service', [])
     .factory('loginService',
-    ['$q', '$timeout', '$http', 'dashboardService',
-        function ($q, $timeout, $http, dashboardService) {
+    ['$q', 'credentials',
+        function ($q, credentials) {
 
             // create user list            
-            var userList = dashboardService.getUserList().userDetails;
+            var userList = credentials.credential;
+
+            // create user variable
+            var user = null;
 
             function login(username, password) {
-
-                console.log("Users LIst "+JSON.stringify(userList));
-                
-                return;
 
                 // create a new instance of deferred
                 var deferred = $q.defer();
 
-                // send a post request to the server
-                $http.post('/user/login',
-                    { username: username, password: password })
-                    // handle success
-                    .success(function (data, status) {
-                        if (status === 200 && data.status) {
-                            user = true;
-                            deferred.resolve();
-                        } else {
-                            user = false;
-                            deferred.reject();
-                        }
-                    })
-                    // handle error
-                    .error(function (err) {
-                        console.log("In Service " + err)
-                        user = false;
-                        deferred.reject();
-                    });
+                var userExists = false;
+
+                angular.forEach(userList, function (value, key) {
+                    if (!userExists && value.email === username && value.password === password) {
+                        userExists = true;
+                        user = userList[key];                        
+                    }
+                });
+
+                if (userExists) {                    
+                    deferred.resolve(user);
+                }
+                else {                    
+                    deferred.reject("Invalid username and/or password");
+                }
 
                 // return promise object
                 return deferred.promise;
-
             }
 
 

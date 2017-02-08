@@ -4,9 +4,9 @@
 
     angular
         .module('dashboard')
-        .controller('dashboardController', ['$scope', '$state', 'dashboardService', dashboardController]);
+        .controller('dashboardController', ['$scope', '$state', 'dashboardService', 'employeeService', dashboardController]);
 
-    function dashboardController($scope, $state, dashboardService) {
+    function dashboardController($scope, $state, dashboardService, employeeService) {
         $scope.blackSpinner = 'resource/images/blackSpinner.gif';
 
         $scope.userList = function() {
