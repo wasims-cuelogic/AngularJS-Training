@@ -6,7 +6,7 @@ Follow below steps for project setup
 
 ### PROJECT SETUP
 
-##### Step 1: Clone from Git (Optional)
+##### Step 1: Clone from Git
 
 1. `git clone https://github.com/wasims-cuelogic/AngularJS-Training.git`
 1. `cd AngularJS-Training`

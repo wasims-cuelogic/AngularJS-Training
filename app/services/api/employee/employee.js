@@ -47,7 +47,7 @@ function employeeService($http, dashboardService, $timeout) {
 
 
     // Update Individual Employee Record:
-    function updateEmployee(userId, userDet) {
+    function updateEmployee(userId, userDet) {        
 
         if (!isNaN(userId) && typeof (userId) == "number" && userId > 0) {
             empList.userDetails.splice(userId - 1, 1, userDet);
