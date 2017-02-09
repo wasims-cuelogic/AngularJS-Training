@@ -4,32 +4,36 @@
 
     angular
         .module('auth')
-        .controller('loginController', ['$scope', '$state', 'loginService', loginController]);
+        .controller('loginController', ['$scope', '$state', 'loginService', 'localStorageServiceWrapper', loginController]);
 
-    function loginController($scope, $state, loginService) {
-        console.log("Inside login controller");
+    function loginController($scope, $state, loginService, localStorageServiceWrapper) {
 
-        $scope.login = function () {           
-            // initial values
-            $scope.error = false;
-            $scope.disabled = true;
+        $scope.user = {};
 
-            // call login from service
-            loginService.login($scope.loginForm.username, $scope.loginForm.password)
-                // handle success
-                .then(function () {
-                    $location.path('/dashboard');
-                    $scope.disabled = false;
-                    $scope.loginForm = {};
-                })
-                // handle error
-                .catch(function () {
-                    $scope.error = true;
-                    $scope.errorMessage = "Invalid username and/or password";
-                    $scope.disabled = false;
-                    $scope.loginForm = {};
-                });
+        $scope.login = function () {
 
+            if ($scope.user.email && $scope.user.password) {                
+
+                // call login from service
+                loginService.login($scope.user.email, $scope.user.password)
+                    // handle success
+                    .then(function (user) {
+
+                        localStorageServiceWrapper.set("user", user);
+                        localStorageServiceWrapper.set("authenticated", true);
+
+                        $state.go('base.dashboard');                        
+                    })
+                    // handle error
+                    .catch(function (err) {                        
+                        $scope.errorMessage = err;   
+                        $scope.user.password = "";                                       
+                        $scope.loginForm.$setPristine();
+                    });
+            }
+            else {
+                $scope.errorMessage = "Please enter username and password";
+            }
         };
     }
 

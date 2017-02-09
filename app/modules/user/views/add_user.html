@@ -1,26 +1,64 @@
-<div class="container-fluid paddingTP30">
-    <h3 class="page-title">{{setTitle}}</h3>
-    <form class="col-md-7">
+<div class="container-fluid paddingTP30">    
+    <h3 class="page-title">{{title}}</h3>
+    <form class="col-md-7" name="userForm" ng-submit="saveUser(userForm.$valid)" novalidate>
         <div class="form-group">
             <label for="firstName">First name</label>
-            <input type="text" class="form-control" id="firstName" placeholder="Enter first name">
+            <input type="text" class="form-control" id="firstName" placeholder="Enter first name" name="fname" ng-model="employeeDetails.fname"
+                required>   
+
+                <p style="color:red" ng-show="userForm.fname.$dirty && userForm.fname.$invalid && userForm.fname.$error.required" class="help-block">First Name is required.</p>         
+                
+                <!--<span style="color:red" ng-show="userForm.fname.$dirty && userForm.fname.$invalid">
+                    <span ng-show="userForm.fname.$error.required">First Name is required.</span>
+                </span>-->
+
+                
         </div>
         <div class="form-group">
             <label for="lastName">Last name</label>
-            <input type="text" class="form-control" id="lastName" placeholder="Enter last name">
+            <input type="text" class="form-control" id="lastName" placeholder="Enter last name" name="lname" ng-model="employeeDetails.lname"
+                required>
+
+                <p style="color:red" ng-show="userForm.lname.$dirty && userForm.lname.$invalid && userForm.lname.$error.required" class="help-block">Last Name is required.</p>
+
+
+                <!--<span style="color:red" ng-show="userForm.lname.$dirty && userForm.lname.$invalid">
+              <span ng-show="userForm.lname.$error.required">Last Name is required.</span>
+                </span>-->
         </div>
         <div class="form-group">
             <label for="email">Email address</label>
-            <input type="email" class="form-control" id="email" placeholder="Enter email">
+            <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" ng-model="employeeDetails.email"
+                ng-blur="verifyDuplicate()" required>
+
+                <p style="color:red" ng-show="userForm.email.$invalid && !userForm.email.$pristine && !userForm.email.$error.duplicate" class="help-block">Enter valid email address.</p>
+
+                <p style="color:red" class="help-block" ng-show="userForm.email.$error.duplicate">Email already exists</p>                
+                
+        </div>
+        <div class="form-group">
+            <label for="department">Department</label>
+            <input type="text" class="form-control" id="department" name="department" placeholder="Enter department" ng-model="employeeDetails.department"
+                required>
+
+                <p style="color:red" ng-show="userForm.department.$dirty && userForm.department.$invalid && userForm.department.$error.required" class="help-block">Department is required.</p>
+                
+        </div>
+        <div class="form-group">
+            <label for="salary">Salary</label>
+            <input type="text" class="form-control" id="salary" name="salary" placeholder="Enter salary" ng-model="employeeDetails.salary" required>            
+
+            <p style="color:red" ng-show="userForm.salary.$dirty && userForm.salary.$invalid && userForm.salary.$error.required" class="help-block">Department is required.</p>
+
         </div>
         <div class="form-group">
             <div class="row">
                 <label for="" class="col-md-12">Gender</label>
                 <label class="col-md-6">
-                    <input type="radio" name="gender" id="male" value="male" checked> Male
+                    <input type="radio" name="gender" id="male" value="male" ng-checked="true" ng-model="employeeDetails.gender"> Male
                 </label>
                 <label class="col-md-6">
-                    <input type="radio" name="gender" id="female" value="female"> Female
+                    <input type="radio" name="gender" id="female" value="female" ng-model="employeeDetails.gender"> Female
                 </label>
             </div>
         </div>
@@ -28,6 +66,8 @@
             <label for="exampleInputFile">Upload file</label>
             <input type="file" id="exampleInputFile">
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+
+        <button type="submit" class="btn btn-primary" ng-disabled="userForm.$invalid">{{submitBtnTxt}}</button>        
+        <button type="submit" ng-click="cancelAction()" class="btn btn-primary">Cancel</button>
     </form>
 </div>
