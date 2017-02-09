@@ -8,31 +8,27 @@
 
     function loginController($scope, $state, loginService, localStorageServiceWrapper) {
 
+        $scope.user = {};
+
         $scope.login = function () {
 
-            if ($scope.loginForm.username && $scope.loginForm.password) {
-                // initial values
-                $scope.error = false;
-                $scope.disabled = true;
+            if ($scope.user.email && $scope.user.password) {                
 
                 // call login from service
-                loginService.login($scope.loginForm.username, $scope.loginForm.password)
+                loginService.login($scope.user.email, $scope.user.password)
                     // handle success
                     .then(function (user) {
 
                         localStorageServiceWrapper.set("user", user);
                         localStorageServiceWrapper.set("authenticated", true);
 
-                        $state.transitionTo('base.dashboard');
-                        $scope.disabled = false;
-                        $scope.loginForm = {};
+                        $state.go('base.dashboard');                        
                     })
                     // handle error
-                    .catch(function (err) {
-                        $scope.error = true;
-                        $scope.errorMessage = err;
-                        $scope.disabled = false;
-                        $scope.loginForm = {};
+                    .catch(function (err) {                        
+                        $scope.errorMessage = err;   
+                        $scope.user.password = "";                                       
+                        $scope.loginForm.$setPristine();
                     });
             }
             else {

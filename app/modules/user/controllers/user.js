@@ -13,16 +13,18 @@
         $scope.title = ($scope.is_edit) ? 'Edit user' : 'Add User';
         $scope.submitBtnTxt = ($scope.is_edit) ? 'Update' : 'Add User';
         $scope.employeeDetails = ($scope.is_edit) ? employeeService.getEmployee(userId) : null;
+        $scope.oldEmail = ($scope.is_edit) ? $scope.employeeDetails.email : null;
 
         $scope.cancelAction = function () {
-            $state.transitionTo('base.dashboard');
+            $state.go('base.dashboard');
         };
 
         $scope.saveUser = function () {
+
             var employee = {
                 'fname': $scope.employeeDetails.fname,
                 'lname': $scope.employeeDetails.lname,
-                'email': $scope.employeeDetails.username,
+                'email': $scope.employeeDetails.email,
                 'department': $scope.employeeDetails.department,
                 'gender': $scope.employeeDetails.gender,
                 'salary': $scope.employeeDetails.salary
@@ -32,14 +34,40 @@
                 employee['id'] = userId;
                 employeeService.updateEmployee(userId, employee)
                     .then(function (res) {
-                        $state.transitionTo('base.dashboard');
+                        $state.go('base.dashboard');
                     })
                     .catch(function (err) {
                         console.log(err)
                     })
             } else {
-                employee['id'] = employeeService.getEmpList().length + 1;
-                userService.addUser(emp);
+                employee['id'] = employeeService.getEmployeeList().length + 1;
+                employeeService.addEmployee(employee)
+                    .then(function (result) {
+                        $state.go('base.dashboard');
+                    })
+                    .catch(function (err) {
+                        console.log(err)
+                    });
+            }
+        };
+
+        $scope.verifyDuplicate = function () {
+
+
+            var duplicate = employeeService.isDuplicateEmail($scope.employeeDetails.email);
+
+            if (duplicate && $scope.is_edit && $scope.employeeDetails.email === $scope.oldEmail) {
+                duplicate = !duplicate;
+            }
+
+            if (duplicate) {
+
+                $scope.userForm.email.$setValidity('duplicate', false);
+                return $scope.userForm.email;
+            }
+            else {
+                $scope.userForm.email.$setValidity('duplicate', true);
+                return $scope.userForm.email;
             }
         }
     }

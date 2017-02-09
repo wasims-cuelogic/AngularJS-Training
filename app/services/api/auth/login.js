@@ -1,44 +1,43 @@
-angular.module('login.service', [])
-    .factory('loginService',
-    ['$q', 'credentials',
-        function ($q, credentials) {
+angular
+    .module('login.service', [])
+    .factory('loginService', ['$q','credentials', loginService]);
 
-            // create user list            
-            var userList = credentials.credential;
+function loginService($q, credentials) {
+    // create user list            
+    var userList = credentials.credential;
 
-            // create user variable
-            var user = null;
+    // create user variable
+    var user = null;
 
-            function login(username, password) {
+    function login(username, password) {
 
-                // create a new instance of deferred
-                var deferred = $q.defer();
+        // create a new instance of deferred
+        var deferred = $q.defer();
 
-                var userExists = false;
+        var userExists = false;
 
-                angular.forEach(userList, function (value, key) {
-                    if (!userExists && value.email === username && value.password === password) {
-                        userExists = true;
-                        user = userList[key];                        
-                    }
-                });
-
-                if (userExists) {                    
-                    deferred.resolve(user);
-                }
-                else {                    
-                    deferred.reject("Invalid username and/or password");
-                }
-
-                // return promise object
-                return deferred.promise;
+        angular.forEach(userList, function (value, key) {
+            if (!userExists && value.email === username && value.password === password) {
+                userExists = true;
+                user = userList[key];
             }
+        });
+
+        if (userExists) {
+            deferred.resolve(user);
+        }
+        else {
+            deferred.reject("Invalid username and/or password");
+        }
+
+        // return promise object
+        return deferred.promise;
+    }
 
 
 
-            // return available functions for use in the controllers
-            return ({
-                login: login
-            });
-
-        }]);
+    // return available functions for use in the controllers
+    return ({
+        login: login
+    });
+}

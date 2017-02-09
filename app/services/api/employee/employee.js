@@ -1,7 +1,7 @@
 angular.module('employee.service', [])
-    .factory('employeeService', ['$http', 'dashboardService', '$timeout', employeeService]);
+    .factory('employeeService', ['$http', 'dashboardService', employeeService]);
 
-function employeeService($http, dashboardService, $timeout) {
+function employeeService($http, dashboardService) {
     var employee = {};
     var empList = [];
 
@@ -27,7 +27,7 @@ function employeeService($http, dashboardService, $timeout) {
     function getEmployee(userId) {
 
         if (!isNaN(userId) && typeof (userId) == "number" && userId > 0) {
-            return empList.userDetails[userId - 1];
+            return empList.userDetails.filter(function (a) { return a.id == userId })[0];
         }
     }
 
@@ -47,7 +47,7 @@ function employeeService($http, dashboardService, $timeout) {
 
 
     // Update Individual Employee Record:
-    function updateEmployee(userId, userDet) {        
+    function updateEmployee(userId, userDet) {
 
         if (!isNaN(userId) && typeof (userId) == "number" && userId > 0) {
             empList.userDetails.splice(userId - 1, 1, userDet);
@@ -97,16 +97,13 @@ function employeeService($http, dashboardService, $timeout) {
 
                     if (empList.userDetails[j].id == userIdsArr[i]) {
 
-                        //$timeout(function() {
                         empList.userDetails.splice(j, 1);
                         resolve(empList);
-                        //}, 3000);
+
                     }
                 }
             }
-            // $timeout(function() {
             reject("Ids not selected");
-            //}, 3000);
         });
     }
 
