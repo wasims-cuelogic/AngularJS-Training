@@ -1,4 +1,5 @@
-<div class="container-fluid paddingTP30">    
+<div class="container-fluid paddingTP30">   
+    <div ng-show="errorMessage.length" class="alert alert-danger">{{errorMessage}}</div> 
     <h3 class="page-title">{{title}}</h3>
     <form class="col-md-7" name="userForm" ng-submit="saveUser(userForm.$valid)" novalidate>
         <div class="form-group">
@@ -67,7 +68,7 @@
             <input type="file" id="exampleInputFile">
         </div>
 
-        <button type="submit" class="btn btn-primary" submit-button ng-disabled="userForm.$invalid">{{submitBtnTxt}}</button>
+        <button type="submit" class="btn btn-primary" submit-button ng-disabled="isDisabled">{{submitBtnTxt}}</button>
 
         <!--<button type="submit" class="btn btn-primary" ng-disabled="userForm.$invalid">{{submitBtnTxt}}</button>        -->
         <button type="submit" ng-click="cancelAction()" class="btn btn-primary">Cancel</button>

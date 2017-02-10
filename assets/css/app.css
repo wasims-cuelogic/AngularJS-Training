@@ -183,3 +183,7 @@ footer {
     float: right;
     margin-right: 10px; 
 }
+
+.table tr{
+    cursor: pointer;
+}

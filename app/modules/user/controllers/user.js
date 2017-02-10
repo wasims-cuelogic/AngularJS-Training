@@ -14,6 +14,7 @@
         $scope.submitBtnTxt = ($scope.is_edit) ? 'Update' : 'Add User';
         $scope.employeeDetails = ($scope.is_edit) ? employeeService.getEmployee(userId) : null;
         $scope.oldEmail = ($scope.is_edit) ? $scope.employeeDetails.email : null;
+        $scope.isDisabled = false;
 
         $scope.cancelAction = function () {
             $state.go('base.dashboard');
@@ -21,38 +22,44 @@
 
         $scope.saveUser = function () {
 
-            var employee = {
-                'fname': $scope.employeeDetails.fname,
-                'lname': $scope.employeeDetails.lname,
-                'email': $scope.employeeDetails.email,
-                'department': $scope.employeeDetails.department,
-                'gender': $scope.employeeDetails.gender,
-                'salary': $scope.employeeDetails.salary
-            };
+            if ($scope.userForm.$valid) {
 
-            $timeout(function () {
+                var employee = {
+                    'fname': $scope.employeeDetails.fname,
+                    'lname': $scope.employeeDetails.lname,
+                    'email': $scope.employeeDetails.email,
+                    'department': $scope.employeeDetails.department,
+                    'gender': $scope.employeeDetails.gender,
+                    'salary': $scope.employeeDetails.salary
+                };
 
-                if ($scope.is_edit) {
-                    employee['id'] = userId;
-                    employeeService.updateEmployee(userId, employee)
-                        .then(function (res) {
-                            $state.go('base.dashboard');
-                        })
-                        .catch(function (err) {
-                            console.log(err)
-                        })
-                } else {
-                    employee['id'] = employeeService.getEmployeeList().length + 1;
-                    employeeService.addEmployee(employee)
-                        .then(function (result) {
-                            $state.go('base.dashboard');
-                        })
-                        .catch(function (err) {
-                            console.log(err)
-                        });
-                }
+                $timeout(function () {
 
-            }, 3000);
+                    if ($scope.is_edit) {
+                        employee['id'] = userId;
+                        employeeService.updateEmployee(userId, employee)
+                            .then(function (res) {
+                                $state.go('base.dashboard');
+                            })
+                            .catch(function (err) {
+                                console.log(err)
+                            })
+                    } else {
+                        employee['id'] = employeeService.getEmployeeList().length + 1;
+                        employeeService.addEmployee(employee)
+                            .then(function (result) {
+                                $state.go('base.dashboard');
+                            })
+                            .catch(function (err) {
+                                console.log(err)
+                            });
+                    }
+
+                }, 3000);
+            }
+            else {
+                $scope.errorMessage = "Please check for form validations";
+            }
         };
 
         $scope.verifyDuplicate = function () {

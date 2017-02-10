@@ -10,8 +10,8 @@ function submitButton($compile) {
             element.bind('click', function (event) {
                 if (scope.userForm.$valid) {
                     scope.submitBtnTxt = "Saving...";
-                    scope.$eval(clickAction);                    
-                    //element.attr('disabled', 'disabled');                    
+                    scope.isDisabled = true;
+                    scope.$eval(clickAction);
                 }
             });
         }
