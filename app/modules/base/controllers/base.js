@@ -3,17 +3,25 @@
 
     angular
         .module('base')
-        .controller('baseController', ['$scope', '$state', 'menuService', 'employeeService', 'localStorageServiceWrapper', baseController]);
+        .controller('baseController', ['$scope', '$state', 'menuService', 'employeeService', '$rootScope', 'localStorageServiceWrapper', baseController]);
 
-    function baseController($scope, $state, menuService,employeeService, localStorageServiceWrapper) {
+    function baseController($scope, $state, menuService, employeeService, $rootScope, localStorageServiceWrapper) {
 
         //calling API and get menus
         $scope.getMenus = menuService.getSidebarMenuList().userMenu;
 
         var user = localStorageServiceWrapper.get('user');
 
-        $scope.currentUserDetails = employeeService.getEmployee(user.id);        
+        $rootScope.$on('authorized', function () {
 
+            $scope.currentUser = employeeService.getEmployee(user.id);
+        });
+
+        $rootScope.$on('unauthorized', function () {
+            var currentUser = localStorageServiceWrapper.set('currentUser', null);
+            $state.go('login');
+
+        });
     }
 
 })();

@@ -4,32 +4,13 @@
 
     angular
         .module('dashboard')
-        .controller('dashboardController', ['$scope', '$state', 'dashboardService', 'employeeService', dashboardController])
-        .directive('confirmClick', function ($window) {
-            var i = 0;
-            return {
-                restrict: 'A',
-                priority: 1,
-                compile: function (tElem, tAttrs) {
-                    var fn = '$$confirmClick' + i++,
-                        _ngClick = tAttrs.ngClick;
-                    tAttrs.ngClick = fn + '($event)';
+        .controller('dashboardController', ['$scope', '$state', '$timeout', 'dashboardService', 'employeeService', dashboardController]);    
 
-                    return function (scope, elem, attrs) {
-                        var confirmMsg = attrs.confirmClick || 'Are you sure?';
-
-                        scope[fn] = function (event) {
-                            if ($window.confirm(confirmMsg)) {
-                                scope.$eval(_ngClick, { $event: event });
-                            }
-                        };
-                    };
-                }
-            };
-        })
-
-    function dashboardController($scope, $state, dashboardService, employeeService) {
+    function dashboardController($scope, $state, $timeout, dashboardService, employeeService) {
         $scope.blackSpinner = 'resource/images/blackSpinner.gif';
+
+        $scope.deleteUsersArray = [];
+        $scope.buttonValue = 'Delete Selected';
 
         var gender_order = {
             female: 1,
@@ -68,15 +49,50 @@
             }]
         };
 
-        $scope.editUser = function (userId) {
-            $state.go('base.edit', { id: userId });
-        };
+        $scope.selectRow = function (userId) {
+
+            var indexOfUserId = $scope.deleteUsersArray.indexOf(userId);
+
+            if (-1 == indexOfUserId) {
+                $scope.deleteUsersArray.push(userId);
+            } else {
+                $scope.deleteUsersArray.splice(indexOfUserId, 1);
+            }                        
+        }        
+
+        $scope.doubleClick = function (userId) {
+            $state.go('base.edit-user', { uid: userId });
+        }
 
         $scope.deleteEmployee = function (userId) {
             employeeService.deleteEmployee(userId)
                 .then(function (user) {
                     $state.go('base.dashboard');
                 });
+        }
+
+        $scope.deleteMultipleEmp = function () {
+
+            if(!$scope.deleteUsersArray.length){
+                return;
+            }
+
+            $scope.disabledButton = true;
+            $scope.buttonValue = 'Deleting...';
+
+            $timeout(function () {
+                employeeService.deleteMultipleEmployees($scope.deleteUsersArray).then(function (res) {
+
+                }).catch(function (msg) {
+
+                    console.log(msg);
+                });
+
+                $scope.disabledButton = false;
+                $scope.buttonValue = 'Delete Selected';
+
+            }, 3000);
+
         }
     }
 

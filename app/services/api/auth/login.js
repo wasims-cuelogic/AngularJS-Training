@@ -1,8 +1,8 @@
 angular
     .module('login.service', [])
-    .factory('loginService', ['$q','credentials', loginService]);
+    .factory('loginService', ['$q', 'credentials', 'localStorageServiceWrapper', loginService]);
 
-function loginService($q, credentials) {
+function loginService($q, credentials, localStorageServiceWrapper) {
     // create user list            
     var userList = credentials.credential;
 
@@ -34,10 +34,35 @@ function loginService($q, credentials) {
         return deferred.promise;
     }
 
+    function isLoggedIn() {
+        if (localStorageServiceWrapper.get('user') == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    function logout() {
+
+        // create a new instance of deferred
+        var deferred = $q.defer();
+
+        // send a get request to the server
+        localStorageServiceWrapper.clearAll('user');
+        user = false;
+        deferred.resolve();
+
+        // return promise object
+        return deferred.promise;
+
+    }
+
 
 
     // return available functions for use in the controllers
     return ({
-        login: login
+        login: login,
+        isLoggedIn: isLoggedIn,
+        logout: logout
     });
 }

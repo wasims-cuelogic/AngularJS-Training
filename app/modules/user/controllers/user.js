@@ -3,9 +3,9 @@
 
     angular
         .module('user')
-        .controller('userController', ['$scope', 'employeeService', '$stateParams', '$state', userController]);
+        .controller('userController', ['$scope', 'employeeService', '$timeout', '$stateParams', '$state', userController]);
 
-    function userController($scope, employeeService, $stateParams, $state) {
+    function userController($scope, employeeService, $timeout, $stateParams, $state) {
 
         var userId = parseInt($stateParams.uid);
 
@@ -30,25 +30,29 @@
                 'salary': $scope.employeeDetails.salary
             };
 
-            if ($scope.is_edit) {
-                employee['id'] = userId;
-                employeeService.updateEmployee(userId, employee)
-                    .then(function (res) {
-                        $state.go('base.dashboard');
-                    })
-                    .catch(function (err) {
-                        console.log(err)
-                    })
-            } else {
-                employee['id'] = employeeService.getEmployeeList().length + 1;
-                employeeService.addEmployee(employee)
-                    .then(function (result) {
-                        $state.go('base.dashboard');
-                    })
-                    .catch(function (err) {
-                        console.log(err)
-                    });
-            }
+            $timeout(function () {
+
+                if ($scope.is_edit) {
+                    employee['id'] = userId;
+                    employeeService.updateEmployee(userId, employee)
+                        .then(function (res) {
+                            $state.go('base.dashboard');
+                        })
+                        .catch(function (err) {
+                            console.log(err)
+                        })
+                } else {
+                    employee['id'] = employeeService.getEmployeeList().length + 1;
+                    employeeService.addEmployee(employee)
+                        .then(function (result) {
+                            $state.go('base.dashboard');
+                        })
+                        .catch(function (err) {
+                            console.log(err)
+                        });
+                }
+
+            }, 3000);
         };
 
         $scope.verifyDuplicate = function () {
