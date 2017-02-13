@@ -9,7 +9,7 @@ server.register(require('inert'), function(err) {
         throw err;
     }
 
-    server.connection({ port: 3000 });
+    server.connection({ port: 3002 });
 
     server.route([{
         method: 'GET',
@@ -39,6 +39,6 @@ server.register(require('inert'), function(err) {
         if (err) {
             throw err;
         }
-        console.log('Web server is listening to http://localhost:3000');
+        console.log('Web server is listening to http://localhost:3002');
     });
 });

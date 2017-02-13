@@ -178,3 +178,12 @@ footer {
         width: 100%;
     }
 }
+.backgroundgreen{background: #5ee708 !important;}
+.delete-btn{
+    float: right;
+    margin-right: 10px; 
+}
+
+.table tr{
+    cursor: pointer;
+}

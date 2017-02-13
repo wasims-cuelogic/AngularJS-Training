@@ -1,50 +1,68 @@
-angular.module('login.service', [])
-    .factory('loginService',
-    ['$q', '$timeout', '$http', 'dashboardService',
-        function ($q, $timeout, $http, dashboardService) {
+angular
+    .module('login.service', [])
+    .factory('loginService', ['$q', 'credentials', 'localStorageServiceWrapper', loginService]);
 
-            // create user list            
-            var userList = dashboardService.getUserList().userDetails;
+function loginService($q, credentials, localStorageServiceWrapper) {
+    // create user list            
+    var userList = credentials.credential;
 
-            function login(username, password) {
+    // create user variable
+    var user = null;
 
-                console.log("Users LIst "+JSON.stringify(userList));
-                
-                return;
+    function login(username, password) {
 
-                // create a new instance of deferred
-                var deferred = $q.defer();
+        // create a new instance of deferred
+        var deferred = $q.defer();
 
-                // send a post request to the server
-                $http.post('/user/login',
-                    { username: username, password: password })
-                    // handle success
-                    .success(function (data, status) {
-                        if (status === 200 && data.status) {
-                            user = true;
-                            deferred.resolve();
-                        } else {
-                            user = false;
-                            deferred.reject();
-                        }
-                    })
-                    // handle error
-                    .error(function (err) {
-                        console.log("In Service " + err)
-                        user = false;
-                        deferred.reject();
-                    });
+        var userExists = false;
 
-                // return promise object
-                return deferred.promise;
-
+        angular.forEach(userList, function (value, key) {
+            if (!userExists && value.email === username && value.password === password) {
+                userExists = true;
+                user = userList[key];
             }
+        });
+
+        if (userExists) {
+            deferred.resolve(user);
+        }
+        else {
+            deferred.reject("Invalid username and/or password");
+        }
+
+        // return promise object
+        return deferred.promise;
+    }
+
+    function isLoggedIn() {
+        if (localStorageServiceWrapper.get('user') == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    function logout() {
+
+        // create a new instance of deferred
+        var deferred = $q.defer();
+
+        // send a get request to the server
+        localStorageServiceWrapper.clearAll('user');
+        user = false;
+        deferred.resolve();
+
+        // return promise object
+        return deferred.promise;
+
+    }
 
 
 
-            // return available functions for use in the controllers
-            return ({
-                login: login
-            });
-
-        }]);
+    // return available functions for use in the controllers
+    return ({
+        login: login,
+        isLoggedIn: isLoggedIn,
+        logout: logout
+    });
+}

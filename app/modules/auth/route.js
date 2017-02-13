@@ -10,6 +10,7 @@
         $stateProvider
             .state('login', {
                 url: '/login',
+                chkAuthenticat: true,
                 views: {
                     '@': {
                         templateUrl: 'app/modules/auth/views/login.html',
