@@ -14,7 +14,8 @@
             'auth',
             'base',
             'dashboard',
-            'user'
+            'user',
+            'categories'
 
         ])
         .config(['$urlRouterProvider', '$locationProvider', '$provide', '$httpProvider', initializeConfigurationPhase])

@@ -1,0 +1,22 @@
+<div class="container-fluid paddingTP30">
+    <h3 class="page-title">Categories</h3>
+    <div class="paddingTB20 clearfix">  
+        <input type="text" name="srch-txt" value="" ng-model="searchId">
+         <a class="btn btn-info pull-left" role="button" ng-click="setCategory(searchId)">Search</a>
+             
+    </div>
+
+    <div class="tab-content">
+        <span><b>Selected Category</b> : {{category.currentNode.name}}</span>  
+        <br> 
+        <br>
+        <div
+            data-angular-treeview="true"
+            data-tree-id="category"
+            data-tree-model="categories"
+            data-node-id="id"
+            data-node-label="name"
+            data-node-children="children" >
+        </div>
+    </div>
+</div>

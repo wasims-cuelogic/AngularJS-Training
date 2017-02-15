@@ -37,6 +37,10 @@ function menuService($http) {
                 "name": "Data Providers",
                 "class": "data-providers",
                 "action": "base.dashboard",
+            }, {
+                "name": "Categories",
+                "class": "categories",
+                "action": "base.categories",
             }]
         }
     }
