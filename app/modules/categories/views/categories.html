@@ -1,7 +1,7 @@
 <div class="container-fluid paddingTP30">
     <h3 class="page-title">Categories</h3>
     <div class="paddingTB20 clearfix">  
-        <input type="text" name="srch-txt" value="" ng-model="searchId">
+        <input type="text" name="srch-txt" value="" ng-model="searchId" ng-keyup="$event.keyCode == 13 ? setCategory(searchId) : null">
          <a class="btn btn-info pull-left" role="button" ng-click="setCategory(searchId)">Search</a>
              
     </div>

@@ -33,8 +33,10 @@
 
                 var myObj = obj;
                 myObj.collapsed = false;
-                myObj.selected = "selected";               
-
+                   
+                if(collapsedIds[collapsedIds.length-1] == obj[key]){
+                    myObj.selected = "selected";        
+                }                   
             }
 
             if (obj[key] !== null && typeof obj[key] === "object") {
@@ -53,7 +55,6 @@
                 var myObj = obj;
                 myObj.collapsed = true; 
                               
-
                 collapseTree(obj[key]);
                 myObj.selected = ""; 
             }
