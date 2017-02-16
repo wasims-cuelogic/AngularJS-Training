@@ -4,36 +4,74 @@
 
     angular
         .module('categories')
-        .controller('categoriesController', ['$scope', categoriesController])
+        .controller('categoriesController', ['$scope', '_', categoriesController])
         .directive('treeModel', treeModel);
 
+    function findParentIds(array, id) {
+        if (typeof array != 'undefined') {
+            for (var i = 0; i < array.length; i++) {
+                if (array[i].id == id) {
+                    return [id];
+                }
+                var a = findParentIds(array[i].children, id);
+                if (a != null) {
+                    a.unshift(array[i].id);
+                    return a;
+                }
+            }
+        }
+        return null;
+    }
 
-    function categoriesController($scope) {
+    function expandTree(obj, collapsedIds) {
 
-        $scope.collapseIds = [
-            { '1': false, '11': false }
-        ];
+        var collapsedIds = collapsedIds;
+
+        for (var key in obj) {
+
+            if (collapsedIds.indexOf(obj[key]) >= 0) {
+
+                var myObj = obj;
+                myObj.collapsed = false;
+                myObj.selected = "selected";               
+
+            }
+
+            if (obj[key] !== null && typeof obj[key] === "object") {
+
+                expandTree(obj[key], collapsedIds);
+            }
+        }
+    }
+
+    function collapseTree(obj) {
+
+        for (var key in obj) {
+
+            if (obj[key] !== null && typeof obj[key] === "object") {
+
+                var myObj = obj;
+                myObj.collapsed = true; 
+                              
+
+                collapseTree(obj[key]);
+                myObj.selected = ""; 
+            }
+        }
+    }
+
+
+    function categoriesController($scope, _) {
+
+        $scope.collapseIds = [];
 
         $scope.setCategory = function (searchId) {
 
-            angular.forEach($scope.categories, function (v,k) {
-                console.log(v.id)
+            collapseTree($scope.categories)
 
-                if(v.id == searchId){
-                    
-                }
-            });
+            $scope.collapseIds = findParentIds($scope.categories, searchId);
 
-            // var arr = searchId.toString(10).split("").map(function (t) { return String(t) });
-
-            // console.log(arr)
-
-            // for (var i = 0; i < arr.length; i++) {
-            //     var obj = $scope.categories.filter(function (obj) {
-            //         return obj.id === arr[i];
-            //     })[0];                
-            //     //$scope.categories[arr[i]].collapsed = false;
-            // }
+            expandTree($scope.categories, $scope.collapseIds)
         }
 
         $scope.$watch('category.currentNode', function (newObj, oldObj) {

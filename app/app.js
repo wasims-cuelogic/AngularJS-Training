@@ -19,7 +19,10 @@
 
         ])
         .config(['$urlRouterProvider', '$locationProvider', '$provide', '$httpProvider', initializeConfigurationPhase])
-        .run(['$rootScope', '$state', 'loginService', authenticationHandler]);
+        .run(['$rootScope', '$state', 'loginService', authenticationHandler])
+        .constant('_',
+            window._
+        );
 
     function initializeConfigurationPhase($urlRouterProvider, $locationProvider, $provide, $httpProvider) {
         $locationProvider.html5Mode({
