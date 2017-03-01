@@ -12,12 +12,12 @@
         <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
             <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="#contact">Contact</a></li>            
             <li uib-dropdown on-toggle="toggled(open)">
-                <a href="#" id="dropdown" uib-dropdown-toggle>User Name <span class="caret"></span></a>
+                <a href="#" id="dropdown" uib-dropdown-toggle>Hello {{currentUser.fname}} <span class="caret"></span></a>
                 <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="dropdown">
                     <li><a href="#">Profile</a></li>
-                    <li><a ui-sref="login">Logout</a></li>
+                    <li><a href="javascript:void(0)"  ng-controller="loginController" ng-click="logout(currentUser)">Logout</a></li>
                 </ul>
             </li>
         </ul>

@@ -4,33 +4,52 @@
 
     angular
         .module('auth')
-        .controller('loginController', ['$scope', '$state', 'loginService', loginController]);
+        .controller('loginController', ['$scope', '$state', '$location', 'loginService', 'localStorageServiceWrapper', loginController]);
 
-    function loginController($scope, $state, loginService) {
-        console.log("Inside login controller");
+    function loginController($scope, $state, $location, loginService, localStorageServiceWrapper) {
 
-        $scope.login = function () {           
-            // initial values
-            $scope.error = false;
-            $scope.disabled = true;
+        $scope.user = {};
 
-            // call login from service
-            loginService.login($scope.loginForm.username, $scope.loginForm.password)
+        $scope.login = function () {
+
+            if ($scope.user.email && $scope.user.password) {
+
+                // call login from service
+                loginService.login($scope.user.email, $scope.user.password)
+                    // handle success
+                    .then(function (user) {
+
+                        localStorageServiceWrapper.set("user", user);
+                        localStorageServiceWrapper.set("authenticated", true);
+
+                        $state.go('base.dashboard');
+                    })
+                    // handle error
+                    .catch(function (err) {
+                        $scope.errorMessage = err;
+                        $scope.user.password = "";
+                        $scope.loginForm.$setPristine();
+                    });
+            }
+            else {
+                $scope.errorMessage = "Please enter username and password";
+            }
+        };
+
+        $scope.logout = function (user) {
+
+            // call logout from service
+            loginService.logout(user)
                 // handle success
-                .then(function () {
-                    $location.path('/dashboard');
-                    $scope.disabled = false;
-                    $scope.loginForm = {};
+                .then(function (result) {
+                    $scope.successMessage = "Logout successfully!";
+                    $location.path('/login');
                 })
                 // handle error
-                .catch(function () {
-                    $scope.error = true;
-                    $scope.errorMessage = "Invalid username and/or password";
-                    $scope.disabled = false;
-                    $scope.loginForm = {};
-                });
+                .catch(function (err) {
 
-        };
+                });
+        }
     }
 
 })();
