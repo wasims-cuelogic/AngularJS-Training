@@ -33,10 +33,10 @@
 
                 var myObj = obj;
                 myObj.collapsed = false;
-                   
-                if(collapsedIds[collapsedIds.length-1] == obj[key]){
-                    myObj.selected = "selected";        
-                }                   
+
+                if (collapsedIds[collapsedIds.length - 1] == obj[key]) {
+                    myObj.selected = "selected";
+                }
             }
 
             if (obj[key] !== null && typeof obj[key] === "object") {
@@ -53,10 +53,10 @@
             if (obj[key] !== null && typeof obj[key] === "object") {
 
                 var myObj = obj;
-                myObj.collapsed = true; 
-                              
+                myObj.collapsed = true;
+
                 collapseTree(obj[key]);
-                myObj.selected = ""; 
+                myObj.selected = "";
             }
         }
     }
@@ -68,11 +68,27 @@
 
         $scope.setCategory = function (searchId) {
 
-            collapseTree($scope.categories)
+            // $scope.collapseIds = findParentIds($scope.categories, searchId);
 
-            $scope.collapseIds = findParentIds($scope.categories, searchId);
+            // $scope.maxId = _.max($scope.collapseIds);
 
-            expandTree($scope.categories, $scope.collapseIds)
+            // $scope.parents = _.where($scope.categories, { id: "1" });
+
+            // collapseTree($scope.categories);
+
+            // expandTree($scope.categories, $scope.collapseIds)
+
+            
+            $scope.ids = searchId.split(','); //['1111', '1211', '4555'];
+
+            collapseTree($scope.categories);
+
+            _.each($scope.ids, function (id) {
+
+                $scope.collapseIds = findParentIds($scope.categories, id);
+
+                expandTree($scope.categories, $scope.collapseIds)
+            });
         }
 
         $scope.$watch('category.currentNode', function (newObj, oldObj) {
@@ -93,6 +109,9 @@
                                         { "name": "SAMSUNG Galaxy On5 (Gold, 8 GB)", "id": "1111", "children": [] },
                                         { "name": "SAMSUNG Galaxy On7 (Black, 8 GB)", "id": "1112", "children": [] }
                                     ], collapsed: true
+                                },
+                                {
+                                    "name": "Nokia", "id": "55", collapsed: true
                                 }
                             ], collapsed: true
                         },
